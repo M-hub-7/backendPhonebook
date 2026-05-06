@@ -59,17 +59,23 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
+
+  if (!body.number || !body.name) {
+    return response.status(400).json({ error: "name or number missing" });
+  }
+  const campare = persons.find((p) => p.name === body.name);
+  if (campare) {
+    return response
+      .status(400)
+      .json({ error: `${body.name} existe deja dans le repertoire` });
+  }
   const person = {
     id: Math.floor(Math.random() * 500000),
     name: body.name,
     number: body.number,
   };
-  if (person) {
-    persons = persons.concat(person);
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  persons = persons.concat(person);
+  response.json(person);
 });
 const PORT = 3001;
 app.listen(PORT, () => {
