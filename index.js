@@ -1,9 +1,18 @@
 const express = require("express");
 const app = express();
 var morgan = require("morgan");
-
+const bodyParser = require("body-parser");
 app.use(express.json());
-app.use(morgan("tiny"));
+app.use(bodyParser.json());
+morgan.token("body", (req) => {
+  return JSON.stringify(req.body);
+});
+
+app.use(
+  morgan(
+    ":method :url :status :res[content-length] :response-time ms - body: :body",
+  ),
+);
 
 let persons = [
   {
